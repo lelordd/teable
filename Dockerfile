@@ -2,17 +2,17 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copier les fichiers de l'application
+# Copier tous les fichiers
 COPY . .
 
-# Installer les dépendances
-RUN npm ci
+# Utiliser npm install au lieu de npm ci
+RUN npm install
 
-# Construire l'application
+# Si vous avez besoin de build votre application
 RUN npm run build
 
-# Exposer le port
+# Exposer le port (ajustez selon votre application)
 EXPOSE 3000
 
-# Commande de démarrage
+# Commande de démarrage (ajustez selon votre application)
 CMD ["npm", "start"]
