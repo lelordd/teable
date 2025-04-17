@@ -27,5 +27,5 @@ RUN pnpm g:build || true
 # Exposer le port
 EXPOSE 3000
 
-# Démarrer le backend NestJS
-CMD ["pnpm", "--filter", "@teable/backend", "start"]
+# Démarrer avec environnement explicite
+CMD ["sh", "-c", "export PUBLIC_ORIGIN=https://xv.automatiser.com && pnpm --filter @teable/backend start"]
