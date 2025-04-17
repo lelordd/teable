@@ -12,4 +12,4 @@ ENV PRISMA_DATABASE_URL=postgresql://qk1QxkhIbaRMpaJt:MtBYzo7b4pqW9uHqzp4mxQe1c2
 EXPOSE 3000
 
 # Conserver la commande de démarrage d'origine
-CMD ["original-command"]
+CMD ["sh", "-c", "PUBLIC_ORIGIN=https://xv.automatiser.com PRISMA_DATABASE_URL=postgresql://qk1QxkhIbaRMpaJt:MtBYzo7b4pqW9uHqzp4mxQe1c2KB0xzv@teable-db:5432/teable pnpm --filter @teable/backend start"]
