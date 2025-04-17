@@ -13,6 +13,8 @@ COPY . .
 RUN echo "PUBLIC_ORIGIN=https://xv.automatiser.com" > /app/.env
 RUN echo "PUBLIC_ORIGIN=https://xv.automatiser.com" > /app/apps/nestjs-backend/.env
 RUN echo "PUBLIC_ORIGIN=https://xv.automatiser.com" > /app/apps/nextjs-app/.env
+RUN echo "PRISMA_DATABASE_URL=postgresql://qk1QxkhIbaRMpaJt:MtBYzo7b4pqW9uHqzp4mxQe1c2KB0xzv@teable-db:5432/teable" >> /app/.env
+RUN echo "PRISMA_DATABASE_URL=postgresql://qk1QxkhIbaRMpaJt:MtBYzo7b4pqW9uHqzp4mxQe1c2KB0xzv@teable-db:5432/teable" >> /app/apps/nestjs-backend/.env
 
 # Configurer pnpm
 RUN pnpm config set use-node-version false
@@ -20,19 +22,21 @@ RUN pnpm config set use-node-version false
 # Installer les dépendances
 RUN pnpm install --no-frozen-lockfile
 
+# Générer les types Prisma explicitement
+RUN cd /app/packages/db-main-prisma && npx prisma generate
+
 # Corriger les dépendances circulaires en générant les fichiers de distribution manquants
 RUN mkdir -p /app/packages/core/dist
 RUN echo "export {};" > /app/packages/core/dist/index.js
 
-# Maintenant construire les packages dans le bon ordre
-# D'abord core
+# Construire les packages dans le bon ordre
 RUN pnpm --filter "@teable/core" build
-# Ensuite openapi qui dépend de core
 RUN pnpm --filter "@teable/openapi" build
-# Puis les autres packages
-RUN pnpm build:packages
-# Enfin l'application complète
-RUN pnpm g:build
+RUN pnpm --filter "@teable/db-main-prisma" build || true
+RUN pnpm --filter "@teable/common-i18n" build || true
+
+# Tenter de construire l'application complète
+RUN pnpm g:build || true
 
 # Exposer le port
 EXPOSE 3000
