@@ -1,18 +1,21 @@
 FROM node:18-alpine
 
+# Installer pnpm
+RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Copier tous les fichiers
 COPY . .
 
-# Utiliser npm install au lieu de npm ci
-RUN npm install
+# Installer les dépendances
+RUN pnpm install
 
-# Si vous avez besoin de build votre application
-RUN npm run build
+# Construire l'application
+RUN pnpm build
 
-# Exposer le port (ajustez selon votre application)
+# Exposer le port
 EXPOSE 3000
 
-# Commande de démarrage (ajustez selon votre application)
-CMD ["npm", "start"]
+# Démarrer l'application
+CMD ["pnpm", "start"]
