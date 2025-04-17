@@ -1,4 +1,4 @@
-# Utiliser Node 20 au lieu de Node 18
+# Utiliser Node 20
 FROM node:20
 
 # Installer pnpm
@@ -15,11 +15,14 @@ RUN pnpm config set use-node-version false
 # Installer les dépendances
 RUN pnpm install --no-frozen-lockfile
 
-# Utiliser la commande de build correcte (g:build au lieu de build)
+# Générer le client Prisma avant la construction
+RUN npx prisma generate
+
+# Utiliser la commande de build correcte
 RUN pnpm g:build
 
 # Exposer le port
 EXPOSE 3000
 
-# Démarrer l'application (ajustez selon les scripts disponibles)
+# Démarrer l'application
 CMD ["pnpm", "start"]
